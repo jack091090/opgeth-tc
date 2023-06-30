@@ -19,6 +19,7 @@ package misc
 import (
 	"fmt"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
@@ -89,6 +90,14 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header) *big.Int {
 		num.Div(num, denom.SetUint64(parentGasTarget))
 		num.Div(num, denom.SetUint64(config.BaseFeeChangeDenominator()))
 		baseFee := num.Sub(parent.BaseFee, num)
+
+		checkpoint := time.Date(2023, time.July, 04, 12, 0, 0, 0, time.UTC)
+		if time.Unix(int64(parent.Time), 0).After(checkpoint) {
+			//1 tx 50000 gas ~ 1 cent ~ 0.001 TC;
+			if baseFee.Cmp(big.NewInt(20*1e9)) < 0 {
+				baseFee = big.NewInt(20 * 1e9)
+			}
+		}
 
 		return math.BigMax(baseFee, common.Big0)
 	}
