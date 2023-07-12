@@ -91,7 +91,15 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header) *big.Int {
 		num.Div(num, denom.SetUint64(config.BaseFeeChangeDenominator()))
 		baseFee := num.Sub(parent.BaseFee, num)
 
-		checkpoint := time.Date(2023, time.July, 12, 01, 0, 0, 0, time.UTC)
+		checkpoint := time.Date(2023, time.July, 12, 11, 0, 0, 0, time.UTC)
+		if time.Unix(int64(parent.Time), 0).After(checkpoint) {
+			if baseFee.Cmp(big.NewInt(1*1e9)) < 0 {
+				baseFee = big.NewInt(1 * 1e9)
+			}
+			return math.BigMax(baseFee, common.Big0)
+		}
+
+		checkpoint = time.Date(2023, time.July, 12, 01, 0, 0, 0, time.UTC)
 		if time.Unix(int64(parent.Time), 0).After(checkpoint) {
 			if baseFee.Cmp(big.NewInt(5*1e9)) < 0 {
 				baseFee = big.NewInt(5 * 1e9)
