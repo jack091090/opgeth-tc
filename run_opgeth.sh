@@ -32,6 +32,7 @@ if [ "$MASTER" == "1" ]; then
       --http.addr=0.0.0.0 \
       --ws \
       --ws.addr=0.0.0.0 \
+      --ws.api=eth,net,web3,txpool \
       --ws.port=8546 \
       --ws.origins="*" \
       --syncmode=full \
