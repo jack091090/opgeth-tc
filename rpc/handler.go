@@ -459,6 +459,14 @@ func (h *handler) handleCall(cp *callProc, msg *jsonrpcMessage) *jsonrpcMessage 
 	}
 	start := time.Now()
 	answer := h.runMethod(cp.ctx, msg, callb, args)
+	peerInfo, ok := cp.ctx.Value(peerInfoContextKey{}).(PeerInfo)
+	remoteAddr := ""
+	if ok {
+		remoteAddr = peerInfo.RemoteAddr
+	}
+	req, _ := json.Marshal(msg)
+	res, _ := json.Marshal(answer)
+	log.Info("rpc handle call request", "RemoteAddr", remoteAddr, "req", string(req), "res", res)
 	// Collect the statistics for RPC calls if metrics is enabled.
 	// We only care about pure rpc call. Filter out subscription.
 	if callb != h.unsubscribeCb {
