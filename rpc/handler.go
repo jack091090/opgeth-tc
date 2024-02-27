@@ -467,7 +467,7 @@ func (h *handler) handleCall(cp *callProc, msg *jsonrpcMessage) *jsonrpcMessage 
 	req, _ := json.Marshal(msg)
 	res, _ := json.Marshal(answer)
 	if msg.Method != "eth_getBlockByHash" {
-		log.Info("rpc handle call request", "RemoteAddr", remoteAddr, "req", string(req), "res", res)
+		log.Info("rpc handle call request", "RemoteAddr", remoteAddr, "req", string(req), "res", string(res))
 	}
 	// Collect the statistics for RPC calls if metrics is enabled.
 	// We only care about pure rpc call. Filter out subscription.
