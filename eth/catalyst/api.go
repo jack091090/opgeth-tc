@@ -18,6 +18,7 @@
 package catalyst
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -349,6 +350,9 @@ func (api *ConsensusAPI) forkchoiceUpdated(update engine.ForkchoiceStateV1, payl
 				return engine.STATUS_INVALID, fmt.Errorf("transaction %d is not valid: %v", i, err)
 			}
 			transactions = append(transactions, &tx)
+			txInfo, _ := tx.MarshalJSON()
+			updateInfo, _ := json.Marshal(update)
+			log.Info("fork choice updated new tx", "txInfo", string(txInfo), "updateInfo", string(updateInfo))
 		}
 		args := &miner.BuildPayloadArgs{
 			Parent:       update.HeadBlockHash,
